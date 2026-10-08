@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0b2a4a">
+<title>اختبار السلامة الرقمية للمعلمين</title>
+<style>
+*{box-sizing:border-box}
+:root{--navy:#0b2a4a;--blue:#1464a5;--gold:#c99622;--bg:#f4f7fb;--green:#18864b;--red:#c63c3c}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,Arial,sans-serif;background:var(--bg);color:#18232f}
+.container{width:min(920px,94%);margin:auto}
+header{background:linear-gradient(135deg,#0b2a4a,#1464a5);color:white;padding:28px 16px 34px;text-align:center}
+.logo{width:64px;height:64px;border-radius:18px;background:white;color:var(--navy);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-weight:900;font-size:25px}
+h1{margin:5px 0;font-size:clamp(24px,6vw,38px)}
+.subtitle{opacity:.9;margin:8px 0 0}
+.card{background:white;border-radius:20px;padding:22px;margin:18px 0;box-shadow:0 8px 28px rgba(10,40,70,.08)}
+input[type=text]{width:100%;padding:15px;border:1px solid #ccd7e2;border-radius:12px;font-size:16px;margin-top:8px}
+.start-btn,.submit-btn,.print-btn,.back-btn{border:0;border-radius:13px;padding:14px 18px;font-size:16px;font-weight:700;cursor:pointer}
+.start-btn,.submit-btn{background:var(--navy);color:white;width:100%;margin-top:16px}
+.question{border:1px solid #e1e8ef;border-radius:16px;padding:18px;margin:16px 0}
+.qtitle{font-weight:800;line-height:1.7;margin-bottom:13px}
+.option{display:flex;gap:10px;align-items:flex-start;padding:12px;border:1px solid #dce5ed;border-radius:12px;margin:9px 0;cursor:pointer}
+.option:hover{background:#f5f9fc}
+.option input{width:auto;margin-top:4px;accent-color:var(--blue)}
+.meta{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:#526477;font-size:14px}
+.hidden{display:none!important}
+.result{text-align:center}
+.score{font-size:52px;font-weight:900;color:var(--navy)}
+.pass{color:var(--green)} .fail{color:var(--red)}
+.certificate-wrap{width:100%;max-width:1200px;margin:20px auto}
+.certificate{position:relative;width:100%;aspect-ratio:1536/1024;background-image:url('Digital Safety Certificate Design(1).png');background-size:100% 100%;background-repeat:no-repeat}
+.cert-name{position:absolute;left:25.8%;width:48.5%;top:56.7%;height:5.7%;display:flex;align-items:flex-end;justify-content:center;font-family:Arial,"Noto Sans Arabic",Tahoma,sans-serif;font-size:clamp(19px,2.7vw,36px);font-weight:700;color:#0c2b61;text-align:center;direction:rtl;white-space:nowrap;overflow:hidden;padding-bottom:2px}
+.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:15px}
+.print-btn{background:var(--gold);color:#17202a}.back-btn{background:#e8eef4;color:#17324b}
+.note{background:#fff8e6;border-right:5px solid var(--gold);padding:13px;border-radius:10px;line-height:1.7}
+footer{text-align:center;padding:30px;color:#718096;font-size:13px}
+@media(max-width:600px){.card{padding:16px}.question{padding:14px}.cert-name{font-size:clamp(15px,3.9vw,25px);top:56.5%;height:5.8%}}
+@media print{
+  @page{size:A4 landscape;margin:0}
+  body{background:white}
+  body *{visibility:hidden!important}
+  #certificateArea,#certificateArea *{visibility:visible!important}
+  #certificateArea{position:absolute;left:0;top:0;width:100%}
+  .certificate-wrap{width:100vw;max-width:none;margin:0}
+  .certificate{width:100vw;height:66.6667vw;max-height:100vh}
+  .actions{display:none!important}
+}
+</style>
+</head>
+<body>
+<header>
+<div class="logo">DS</div>
+<h1>اختبار السلامة الرقمية</h1>
+<div class="subtitle">كيف تكون آمناً ومسؤولاً على الإنترنت؟</div>
+</header>
+
+<main class="container">
+<section id="start" class="card">
+<h2>اختبار المعلمين</h2>
+<p>يتكون الاختبار من <strong>15 سؤالاً</strong> متنوعة ومتقدمة. درجة النجاح هي <strong>70%</strong>، أي <strong>11 إجابة صحيحة من 15</strong>.</p>
+<div class="note">اكتبي الاسم الكامل كما تريدين ظهوره في الشهادة. بعد إرسال الاختبار ستظهر النتيجة، وعند النجاح تظهر شهادة المدرسة مع اسم المعلم.</div>
+<label for="teacherName"><strong>اسم المعلم/المعلمة</strong></label>
+<input id="teacherName" type="text" placeholder="اكتب الاسم الكامل" autocomplete="name">
+<button class="start-btn" onclick="startQuiz()">بدء الاختبار</button>
+</section>
+
+<section id="quiz" class="hidden">
+<div class="card">
+<div class="meta"><span>عدد الأسئلة: 15</span><span>النجاح: 11 / 15 (70%)</span></div>
+</div>
+<form id="quizForm"></form>
+<div class="card">
+<button class="submit-btn" type="button" onclick="submitQuiz()">إرسال الاختبار وإظهار النتيجة</button>
+</div>
+</section>
+
+<section id="result" class="hidden">
+<div class="card result">
+<h2>نتيجة الاختبار</h2>
+<div id="resultScore" class="score"></div>
+<p id="resultMessage"></p>
+<div id="certificateArea" class="hidden">
+<div class="certificate-wrap">
+<div class="certificate" id="certificate">
+<div class="cert-name" id="certName"></div>
+</div>
+</div>
+<div class="actions no-print">
+<button class="print-btn" onclick="window.print()">طباعة / حفظ الشهادة PDF</button>
+<button class="back-btn" onclick="location.reload()">إعادة الاختبار</button>
+</div>
+</div>
+<div id="retryArea" class="hidden actions">
+<button class="back-btn" onclick="location.reload()">إعادة الاختبار</button>
+</div>
+</div>
+</section>
+</main>
+<footer>نسخة تجريبية — نظام اختبار السلامة الرقمية للمعلمين</footer>
+
+<script>
+const questions = [
+{q:"وصلتك رسالة بريدية تبدو من Microsoft وتطلب منك تسجيل الدخول خلال 30 دقيقة لتجنب إيقاف الحساب. الرابط يقود إلى نطاق يشبه اسم الشركة لكنه ليس النطاق الرسمي. ما التصرف الأكثر أماناً؟",o:["فتح الرابط والتأكد من الصفحة قبل إدخال كلمة المرور","نسخ الرابط وإرساله لزميل للتجربة","عدم استخدام الرابط وفتح الموقع الرسمي يدوياً للتحقق من حالة الحساب","الرد على الرسالة وطلب إثبات الهوية"],a:2},
+{q:"أي عبارة تصف المصادقة متعددة العوامل (MFA) بدقة أكبر؟",o:["استخدام كلمتي مرور للحساب نفسه","استخدام عاملين أو أكثر من فئات تحقق مختلفة مثل كلمة مرور ومفتاح أمني","تغيير كلمة المرور كل يوم","تسجيل الدخول من جهازين في الوقت نفسه"],a:1},
+{q:"إذا تم اختراق كلمة مرور تستخدمينها في عدة مواقع، ما الخطر الأكبر؟",o:["بطء الإنترنت","إعادة استخدام بيانات الدخول للوصول إلى حسابات أخرى","امتلاء مساحة التخزين","اختفاء سجل المتصفح"],a:1},
+{q:"في شبكة Wi‑Fi عامة، أي ممارسة تقلل الخطر بشكل أفضل عند التعامل مع حسابات حساسة؟",o:["إيقاف قفل الشاشة","استخدام VPN موثوق أو شبكة الهاتف وتجنب المعاملات الحساسة على الشبكات غير الموثوقة","الاتصال بالشبكة الأقوى فقط","حفظ كلمة المرور في المتصفح العام"],a:1},
+{q:"تلقيت رمز تحقق لم تطلبيه، ثم اتصل شخص يدّعي أنه من الدعم الفني ويطلب منك قراءة الرمز. ماذا يعني ذلك غالباً؟",o:["إجراء أمني طبيعي يجب إكماله","محاولة لاستخدام رمز تحقق تم إرساله لحسابك، وقد تكون عملية احتيال","تحديث تلقائي للجهاز","دليل أن الحساب تم حذفه"],a:1},
+{q:"أي كلمة مرور هي الأقوى عادةً؟",o:["School2026!","Eman123456!","Qwerty@2026","جملة مرور طويلة وفريدة لا تستخدم في أي حساب آخر"],a:3},
+{q:"أرسلتِ ملفاً يحتوي بيانات طلاب إلى شخص، ثم اكتشفتِ أن عنوان البريد كان خاطئاً. ما الخطوة الأولى الأكثر ملاءمة؟",o:["تجاهل الأمر طالما أن الملف لم يعد عندك","إرسال الملف الصحيح إلى عنوان آخر","الإبلاغ فوراً وفق سياسة المدرسة ومحاولة احتواء الوصول إلى الملف إن أمكن","حذف نسخة الملف من جهازك فقط"],a:2},
+{q:"أي مثال يمثل التصيد الموجّه (Spear Phishing)؟",o:["إعلان عام يظهر للجميع","رسالة مخصصة للمعلم باسمه وتذكر اسم المدرسة وتطلب إجراءً عاجلاً","رسالة إخبارية اشترك فيها المستخدم","تنبيه نظام عادي بلا رابط"],a:1},
+{q:"وجدتِ USB مجهولاً في المدرسة يحمل اسم 'رواتب الموظفين'. ما التصرف الأكثر أماناً؟",o:["وصله بجهاز المدرسة لمعرفة محتواه","فتحه على الهاتف أولاً","عدم توصيله والإبلاغ عنه وفق إجراءات المدرسة","نسخ الملفات إلى جهاز شخصي"],a:2},
+{q:"لماذا يعد تحديث نظام التشغيل والتطبيقات جزءاً من السلامة الرقمية؟",o:["لأنه يزيد حجم الملفات","لأنه قد يتضمن إصلاحات لثغرات أمنية معروفة","لأنه يمنع كل رسائل البريد المزعجة","لأنه يجعل كلمة المرور أقوى تلقائياً"],a:1},
+{q:"أي إعداد هو الأفضل عند مشاركة مستند سحابي يحتوي معلومات مدرسية حساسة؟",o:["Anyone with the link — Editor","Public on the web","تحديد الأشخاص المصرح لهم ومنح أقل مستوى وصول لازم","مشاركة الرابط في مجموعة عامة ثم حذفه لاحقاً"],a:2},
+{q:"إذا كانت صورة منشورة على الإنترنت لا تحتوي اسم الطالب، فهذا يعني أن نشرها آمن دائماً.",o:["صحيح","خطأ، فقد تكشف الصورة معلومات أخرى أو يمكن التعرف على الطالب من السياق","صحيح إذا كانت الصورة عالية الجودة","صحيح إذا كانت في مجموعة خاصة"],a:1},
+{q:"ما المقصود بمبدأ 'أقل صلاحية' (Least Privilege)؟",o:["إعطاء الجميع صلاحيات المدير لتسهيل العمل","منح المستخدم أو التطبيق أقل صلاحيات يحتاجها لتنفيذ مهمته فقط","منع جميع المستخدمين من الوصول إلى الملفات","استخدام كلمة مرور قصيرة لتسهيل الدخول"],a:1},
+{q:"استخدمتِ جهازاً مدرسياً عاماً لتسجيل الدخول إلى حسابك. ما الإجراء المهم بعد الانتهاء؟",o:["ترك الحساب مفتوحاً لتوفير الوقت","تسجيل الخروج والتأكد من عدم حفظ بيانات الدخول، ثم قفل الجهاز","حذف بعض سجل البحث فقط","إغلاق المتصفح دون تسجيل الخروج"],a:1},
+{q:"أي موقف هو أفضل مثال على 'الهندسة الاجتماعية'؟",o:["تثبيت تحديث أمني رسمي","استغلال ثقة الشخص أو استعجاله لإقناعه بالكشف عن معلومات أو تنفيذ إجراء","استخدام جدار حماية","نسخ ملف احتياطي"],a:1}
+];
+let teacherName="";
+function startQuiz(){
+ teacherName=document.getElementById("teacherName").value.trim();
+ if(!teacherName){alert("يرجى كتابة الاسم الكامل أولاً.");return;}
+ document.getElementById("start").classList.add("hidden");
+ document.getElementById("quiz").classList.remove("hidden");
+ document.getElementById("quizForm").innerHTML=questions.map((x,i)=>`
+ <div class="question"><div class="qtitle">${i+1}. ${x.q}</div>
+ ${x.o.map((opt,j)=>`<label class="option"><input type="radio" name="q${i}" value="${j}"><span>${opt}</span></label>`).join("")}</div>`).join("");
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+function submitQuiz(){
+ let score=0, unanswered=0;
+ questions.forEach((x,i)=>{
+   const selected=document.querySelector(`input[name="q${i}"]:checked`);
+   if(!selected) unanswered++;
+   else if(Number(selected.value)===x.a) score++;
+ });
+ if(unanswered>0){alert(`يرجى الإجابة عن جميع الأسئلة. الأسئلة غير المجابة: ${unanswered}`);return;}
+ document.getElementById("quiz").classList.add("hidden");
+ document.getElementById("result").classList.remove("hidden");
+ document.getElementById("resultScore").textContent=`${score} / 15`;
+ const passed=score>=11;
+ const msg=document.getElementById("resultMessage");
+ msg.className=passed?"pass":"fail";
+ msg.innerHTML=passed?"🎉 مبروك! لقد اجتزت الاختبار بنجاح.":"لم تحقق درجة الاجتياز (11 من 15). يمكنك إعادة الاختبار.";
+ if(passed){
+   document.getElementById("certificateArea").classList.remove("hidden");
+   document.getElementById("certName").textContent=teacherName;
+ }else document.getElementById("retryArea").classList.remove("hidden");
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+</script>
+</body>
+</html>
